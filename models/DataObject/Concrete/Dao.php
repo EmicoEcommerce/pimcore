@@ -22,6 +22,7 @@ use Pimcore\Logger;
 use Pimcore\Model;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\CustomResourcePersistingInterface;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Fieldcollections;
 use Pimcore\Model\DataObject\ClassDefinition\Data\LazyLoadingSupportInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\ResourcePersistenceAwareInterface;
@@ -405,6 +406,10 @@ class Dao extends Model\DataObject\AbstractObject\Dao
 
         // delete fields which have their own delete algorithm
         foreach ($this->model->getClass()->getFieldDefinitions() as $fd) {
+            if ($fd instanceof Fieldcollections) {
+                continue;
+            }
+
             if ($fd instanceof CustomResourcePersistingInterface) {
                 $fd->delete($this->model);
             }
